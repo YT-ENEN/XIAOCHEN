@@ -1,0 +1,214 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+    <meta charset="UTF-8">
+    <title>Aurora & Meteor Shower Background</title>
+    <style>
+        /* 重置邊界並設定深色夜空背景 */
+        body, html {
+            margin: 0;
+            padding: 0;
+            width: 100%;
+            height: 100%;
+            background: #020204; /* 極深的夜空底色 */
+            overflow: hidden;
+        }
+
+        /* ==========================================
+           新增：極光背景動畫層 (CSS 渲染效能極佳)
+           ========================================== */
+        .aurora-bg {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: 
+                radial-gradient(ellipse at 20% 30%, rgba(0, 242, 255, 0.15) 0%, transparent 50%), /* 霓虹藍 */
+                radial-gradient(ellipse at 80% 20%, rgba(0, 255, 128, 0.1) 0%, transparent 50%),  /* 科技綠 */
+                radial-gradient(ellipse at 50% 80%, rgba(128, 0, 255, 0.15) 0%, transparent 50%); /* 深紫光 */
+            filter: blur(60px); /* 毛玻璃模糊產生極光柔和感 */
+            animation: aurora-drift 20s infinite alternate ease-in-out; /* 緩慢流動動畫 */
+            z-index: 1; /* 放在畫布底層 */
+        }
+
+        @keyframes aurora-drift {
+            0% { transform: scale(1) translate(0, 0); }
+            50% { transform: scale(1.1) translate(-2%, 4%); }
+            100% { transform: scale(1.05) translate(3%, -3%); }
+        }
+        
+        /* 確保畫布填滿整個畫面，並疊加在極光上方 */
+        canvas {
+            position: relative;
+            z-index: 2;
+            display: block;
+            width: 100vw;
+            height: 100vh;
+        }
+    </style>
+</head>
+<body>
+
+    <div class="aurora-bg"></div>
+    
+    <canvas id="meteorCanvas"></canvas>
+
+    <script>
+        const canvas = document.getElementById('meteorCanvas');
+        const ctx = canvas.getContext('2d');
+        
+        let width, height;
+        let stars = [];
+        let meteors = [];
+
+        // 自動調整畫布大小
+        function resize() {
+            width = canvas.width = window.innerWidth;
+            height = canvas.height = window.innerHeight;
+        }
+
+        // ==========================================
+        // 1. 靜態背景星空 (微閃爍效果)
+        // ==========================================
+        class Star {
+            constructor() {
+                this.x = Math.random() * width;
+                this.y = Math.random() * height;
+                this.size = Math.random() * 1.5;
+                this.alpha = Math.random();
+                this.alphaChange = (Math.random() * 0.02) - 0.01; // 閃爍速度
+            }
+            update() {
+                this.alpha += this.alphaChange;
+                if (this.alpha <= 0.1 || this.alpha >= 0.8) {
+                    this.alphaChange = -this.alphaChange;
+                }
+            }
+            draw() {
+                ctx.beginPath();
+                ctx.arc(this.x, this.y, this.size, 0, Math.PI * 2);
+                ctx.fillStyle = `rgba(255, 255, 255, ${this.alpha})`;
+                ctx.fill();
+            }
+        }
+
+        // ==========================================
+        // 2. 不規則流星 (長度、速度、粗細隨機)
+        // ==========================================
+        class Meteor {
+            constructor() {
+                this.reset();
+            }
+            
+            reset() {
+                // 流星從右上角或上方邊緣隨機產生
+                this.x = Math.random() * width + 200; 
+                this.y = Math.random() * -height;
+                
+                // 隨機速度 (產生不規則感)
+                this.speed = Math.random() * 10 + 5; 
+                // X 軸與 Y 軸的移動向量 (大約是向左下 45 度角)
+                this.vx = -this.speed;
+                this.vy = this.speed;
+                
+                // 隨機長度與粗細
+                this.length = Math.random() * 80 + 40;
+                this.thickness = Math.random() * 1.5 + 0.5;
+                
+                // 生命週期，用於漸近消失
+                this.active = true;
+            }
+
+            update() {
+                this.x += this.vx;
+                this.y += this.vy;
+
+                // 如果流星飛出畫面左下角，就重置它
+                if (this.x < -200 || this.y > height + 200) {
+                    this.active = false;
+                }
+            }
+
+            draw() {
+                // 計算流星尾巴的座標
+                const tailX = this.x - this.vx * (this.length / this.speed);
+                const tailY = this.y - this.vy * (this.length / this.speed);
+
+                // 建立漸層 (白亮頭部 -> 霓虹藍 -> 透明拖尾)
+                let gradient = ctx.createLinearGradient(this.x, this.y, tailX, tailY);
+                gradient.addColorStop(0, 'rgba(255, 255, 255, 1)'); 
+                gradient.addColorStop(0.1, 'rgba(0, 242, 255, 0.8)'); 
+                gradient.addColorStop(1, 'rgba(0, 242, 255, 0)'); 
+
+                ctx.beginPath();
+                ctx.moveTo(this.x, this.y);
+                ctx.lineTo(tailX, tailY);
+                ctx.strokeStyle = gradient;
+                ctx.lineWidth = this.thickness;
+                ctx.lineCap = 'round';
+                ctx.stroke();
+            }
+        }
+
+        // 初始化場景
+        function init() {
+            resize();
+            stars = [];
+            meteors = [];
+            
+            // 建立星空
+            let numStars = Math.floor((width * height) / 3000);
+            for (let i = 0; i < numStars; i++) {
+                stars.push(new Star());
+            }
+
+            // 建立初始流星群
+            for (let i = 0; i < 8; i++) {
+                meteors.push(new Meteor());
+            }
+        }
+
+        // 動畫主迴圈
+        function animate() {
+            // 【關鍵修改】：改用 destination-out 產生殘影
+            // 這樣可以讓 Canvas 背景保持透明，讓底下的 CSS 極光完美透上來！
+            ctx.globalCompositeOperation = 'destination-out';
+            ctx.fillStyle = 'rgba(0, 0, 0, 0.3)';
+            ctx.fillRect(0, 0, width, height);
+            ctx.globalCompositeOperation = 'source-over';
+            
+            // 繪製星空
+            stars.forEach(star => {
+                star.update();
+                star.draw();
+            });
+
+            // 隨機機率產生新的流星，增加不規則感
+            if (Math.random() < 0.03 && meteors.length < 12) {
+                meteors.push(new Meteor());
+            }
+
+            // 更新與繪製流星
+            for (let i = meteors.length - 1; i >= 0; i--) {
+                if (meteors[i].active) {
+                    meteors[i].update();
+                    meteors[i].draw();
+                } else {
+                    // 移除已經死掉的流星
+                    meteors.splice(i, 1);
+                }
+            }
+
+            requestAnimationFrame(animate);
+        }
+
+        window.addEventListener('resize', () => {
+            init();
+        });
+
+        init();
+        animate();
+    </script>
+</body>
+</html>
