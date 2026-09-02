@@ -7,12 +7,16 @@
     <link rel="icon" href="MARK.ico" type="image/x-icon">
     <title>小Chen小舖|各種專業買賣</title>
     <style>
-        @import url('https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700&family=Noto+Sans+TC:wght@300;500&display=swap');
+        @import url('https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700&family=Noto+Sans+TC:wght@300;500;700&display=swap');
         
-        :root { --accent: #00f2ff; --glass: rgba(25, 25, 30, 0.6); }
+        :root { 
+            --accent: #00f2ff; 
+            --glass: rgba(25, 25, 30, 0.6); 
+            --gold: #d4af37;
+        }
         html { scroll-behavior: smooth; height: 100%; }
         
-        /* 🚀 【背景全螢幕核心設定】：使用 fixed 固定，寬高設定 vw/vh 並關閉邊框，保證手機滾動時背景絕對滿版 */
+        /* 🚀 【背景全螢幕核心設定】 */
         .bg-iframe { 
             position: fixed; 
             top: 0; 
@@ -41,15 +45,11 @@
             z-index: 1000; border-bottom: 1px solid rgba(0,242,255,0.2); 
         }
         
-        /* 導覽列 - 左側 LOGO */
         .nav-logo img { width: 45px; height: 45px; border-radius: 10px; object-fit: cover; display: block; }
-        
-        /* 導覽列 - 中間選單 */
         .nav-links { display: flex; gap: 30px; align-items: center; }
         .nav-links a { color: #fff; text-decoration: none; font-size: 0.9rem; transition: 0.3s; letter-spacing: 2px; }
         .nav-links a:hover { color: var(--accent); }
 
-        /* 導覽列 - 右側 ICON (膠囊型底框設計) */
         .nav-socials {
             display: flex; gap: 10px; align-items: center;
             background: rgba(0, 0, 0, 0.5); border: 1px solid rgba(0,242,255,0.2);
@@ -85,10 +85,81 @@
         .about-section { padding: 100px 20px; text-align: center; background: linear-gradient(to bottom, transparent, rgba(5,5,10,0.8)); }
         .main-container { max-width: 900px; margin: 0 auto; padding: 50px 20px; box-sizing: border-box; }
         
-        .service-card { background: var(--glass); backdrop-filter: blur(20px); border: 1px solid rgba(255,255,255,0.1); padding: 40px; border-radius: 20px; display: flex; justify-content: space-between; align-items: center; transition: 0.4s; box-sizing: border-box; }
+        .service-card { background: var(--glass); backdrop-filter: blur(20px); border: 1px solid rgba(255,255,255,0.1); padding: 40px; border-radius: 20px; display: flex; justify-content: space-between; align-items: center; transition: 0.4s; box-sizing: border-box; margin-bottom: 20px; }
         .service-card:hover { border-color: var(--accent); transform: translateX(10px); background: rgba(0,242,255,0.1); }
         .btn { padding: 12px 25px; border: 1px solid var(--accent); color: var(--accent); text-decoration: none; border-radius: 50px; transition: 0.3s; white-space: nowrap; }
         .btn:hover { background: var(--accent); color: #000; }
+
+        /* === 🛡️ 交易保障 區塊 === */
+        .guarantee-section {
+            max-width: 1250px;
+            margin: 0 auto;
+            padding: 60px 20px 100px 20px;
+            box-sizing: border-box;
+        }
+        .guarantee-header {
+            margin-bottom: 35px;
+        }
+        .guarantee-sub {
+            font-family: 'Orbitron', sans-serif;
+            font-size: 0.85rem;
+            color: var(--gold);
+            letter-spacing: 3px;
+            text-transform: uppercase;
+            margin-bottom: 8px;
+        }
+        .guarantee-title {
+            font-size: 2.3rem;
+            margin: 0 0 12px 0;
+            letter-spacing: 2px;
+            font-weight: 700;
+        }
+        .guarantee-desc {
+            color: #aaa;
+            font-size: 0.95rem;
+            margin: 0;
+        }
+
+        .guarantee-grid {
+            display: grid;
+            grid-template-columns: repeat(5, 1fr);
+            gap: 16px;
+        }
+        .guarantee-card {
+            background: var(--glass);
+            backdrop-filter: blur(15px);
+            border: 1px solid rgba(255, 255, 255, 0.08);
+            border-radius: 18px;
+            padding: 28px 20px;
+            box-sizing: border-box;
+            display: flex;
+            flex-direction: column;
+            align-items: flex-start;
+            transition: 0.3s ease;
+        }
+        .guarantee-card:hover {
+            border-color: var(--gold);
+            transform: translateY(-5px);
+            box-shadow: 0 8px 25px rgba(212, 175, 55, 0.15);
+        }
+        .guarantee-icon {
+            width: 32px;
+            height: 32px;
+            margin-bottom: 22px;
+            color: var(--gold);
+        }
+        .guarantee-card h3 {
+            font-size: 1.15rem;
+            margin: 0 0 12px 0;
+            font-weight: 700;
+            color: #fff;
+        }
+        .guarantee-card p {
+            color: #999;
+            font-size: 0.85rem;
+            line-height: 1.65;
+            margin: 0;
+        }
 
         /* === Footer 樣式 === */
         footer { padding: 60px 20px; border-top: 1px solid rgba(255,255,255,0.1); text-align: center; background: rgba(0,0,0,0.6); backdrop-filter: blur(10px); box-sizing: border-box; }
@@ -99,41 +170,45 @@
         }
         .footer-socials .social-icon { width: 40px; height: 40px; } 
 
-        /* =========================================
-           🚀 響應式手機版本核心 UI 與全螢幕背景優化
-           ========================================= */
+        /* === 響應式手機版本 === */
+        @media (max-width: 1024px) {
+            .guarantee-grid {
+                grid-template-columns: repeat(2, 1fr);
+            }
+        }
+
         @media (max-width: 768px) {
             nav { padding: 12px 20px; flex-wrap: wrap; justify-content: space-between; }
-            /* 中間文字按鈕選單移至最下方並維持水平置中 */
             .nav-links { gap: 20px; order: 3; width: 100%; justify-content: center; margin-top: 12px; }
             .nav-links a { font-size: 0.85rem; letter-spacing: 1px; }
             
-            /* 右上角膠囊 ICON 自動縮小與適應，防止超出畫面 */
             .nav-socials { padding: 4px 10px; gap: 6px; flex-wrap: wrap; max-width: 70%; justify-content: flex-end; }
             .social-icon { width: 30px; height: 30px; }
             
-            /* 主頁核心文字與 LOGO 縮放 */
             .hero { height: 80vh; padding-top: 80px; }
             .hero-logo { width: 95px; height: 95px; margin-bottom: 15px; } 
             h1 { font-size: 2.8rem; letter-spacing: 4px; line-height: 1.2; }
             .hero p { font-size: 0.85rem; letter-spacing: 1px; margin-top: 8px; }
             .scroll-down-btn { margin-top: 35px; padding: 10px 25px; font-size: 0.8rem; }
             
-            /* 內容區塊結構優化 */
             .about-section { padding: 60px 15px; }
             .about-section h2 { font-size: 1.4rem; }
             .about-section p { font-size: 0.9rem; line-height: 1.6; }
             
             .main-container { padding: 20px 15px; }
             .service-card { flex-direction: column; text-align: center; padding: 25px 20px; }
-            .service-card:hover { transform: translateY(-5px); } /* 手機上改為向上輕微浮動更直覺 */
+            .service-card:hover { transform: translateY(-5px); }
             .service-card div { margin-bottom: 20px; }
             .service-card h2 { font-size: 1.2rem; }
             .service-card p { font-size: 0.88rem; line-height: 1.5; }
             
             .btn { display: block; width: 100%; box-sizing: border-box; padding: 12px; font-size: 0.95rem; }
+
+            /* 保障區塊手機微調 */
+            .guarantee-section { padding: 40px 15px 60px 15px; }
+            .guarantee-title { font-size: 1.8rem; }
+            .guarantee-grid { grid-template-columns: 1fr; gap: 12px; }
             
-            /* 底部 ICON 優化 */
             footer { padding: 40px 15px; }
             .footer-socials { gap: 12px; padding: 8px 20px; }
             .footer-socials .social-icon { width: 34px; height: 34px; }
@@ -152,6 +227,7 @@
         <div class="nav-links">
             <a href="#about">工作室簡介</a>
             <a href="#services">服務項目</a>
+            <a href="#guarantee">交易保障</a>
             <a href="購買須知.html">購買須知</a>
         </div>
         
@@ -177,16 +253,12 @@
         </div>
     </nav>
     
-    <br class="mobile-hide"><br class="mobile-hide">
-
     <div class="hero">
         <img src="LOGO.png" alt="Main Logo" class="hero-logo">
         <h1>XIAO CHEN</h1>
         <p style="letter-spacing: 5px; color: var(--accent);">買賣一時 服務一世</p>
         <a href="#about" class="scroll-down-btn">查看更多 ▼</a>
     </div>
-    
-    <br><br><br><br>
     
     <section id="about" class="about-section">
         <div style="max-width: 700px; margin: 0 auto;">
@@ -210,8 +282,54 @@
             </div>
             <a href="FreeFire.html" class="btn">查看詳情</a>
         </div>
-        <br>
     </div>
+
+    <section id="guarantee" class="guarantee-section">
+        <div class="guarantee-header">
+            <div class="guarantee-sub">WHY CHOOSE US</div>
+            <h2 class="guarantee-title">交易保障</h2>
+            <p class="guarantee-desc">以下是我們提供給每位客人的安心保障，也是許多玩家選擇小Chen小舖的原因。</p>
+        </div>
+        
+        <div class="guarantee-grid">
+            <div class="guarantee-card">
+                <svg class="guarantee-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                    <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"></path>
+                    <path d="M9 12l2 2 4-4"></path>
+                </svg>
+                <h3>十年經營</h3>
+                <p>累積超過5000筆成交紀錄與良好信譽，持續提供穩定的服務。</p>
+            </div>
+
+            <div class="guarantee-card">
+                <svg class="guarantee-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                    <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"></path>
+                </svg>
+                <h3>買賣保障</h3>
+                <p>保障期間內都無改綁都可以協助處理</p>
+            </div>
+
+            <div class="guarantee-card">
+                <svg class="guarantee-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                    <circle cx="12" cy="12" r="10"></circle>
+                    <path d="M16 8h-6a2 2 0 1 0 0 4h4a2 2 0 1 1 0 4H8"></path>
+                    <line x1="12" y1="6" x2="12" y2="8"></line>
+                    <line x1="12" y1="16" x2="12" y2="18"></line>
+                </svg>
+                <h3>收購立刻付款</h3>
+                <p>確認帳號與綁定完成後，依約定方式立刻撥款，迅速不拖延。</p>
+            </div>
+
+            <div class="guarantee-card">
+                <svg class="guarantee-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                    <circle cx="12" cy="12" r="10"></circle>
+                    <polyline points="12 6 12 12 16 14"></polyline>
+                </svg>
+                <h3>快速回覆</h3>
+                <p>所有價格與交易細節，由官方LINE(@682gddht)一對一逐一處理，效率溝通。</p>
+            </div>
+        </div>
+    </section>
 
     <footer>
         <div class="footer-socials">
